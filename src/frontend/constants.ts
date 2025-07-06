@@ -9,8 +9,6 @@ export enum Themes {
 	LIGHT = "corporate",
 }
 
-export const MAX_ITEMS = 6;
-
 export const dailyIcons = [
 	"bed",
 	"utensils",

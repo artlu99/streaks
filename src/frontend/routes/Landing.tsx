@@ -19,8 +19,8 @@ export function Landing() {
 		<>
 			<article className="prose dark:prose-invert px-4 pb-20">
 				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-2xl mx-auto">
-					{selectedItems.slice(0, 6).map((item, idx) => (
-						<ToggleButton key={item.id} idx={idx} item={item} />
+					{selectedItems.slice(0, 6).map((item) => (
+						<ToggleButton key={item.id} item={item} />
 					))}
 				</div>
 				<div className="flex flex-col w-full justify-center items-center mt-8">

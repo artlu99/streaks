@@ -1,5 +1,6 @@
 import { createConsole, createTime } from "@evolu/common";
 import { useQuery } from "@evolu/react";
+import { unique } from "radash";
 import { useMemo } from "react";
 import { parse } from "valibot";
 import { LoggingLevel, Themes } from "~/constants";
@@ -13,11 +14,10 @@ import { ActivitySchema, type Item } from "~/lib/schema";
 import { calculateStartOfWeek } from "~/lib/timeUtils";
 
 interface ToggleButtonProps {
-	idx: number;
 	item: Item;
 }
 
-export const ToggleButton = ({ idx, item }: ToggleButtonProps) => {
+export const ToggleButton = ({  item }: ToggleButtonProps) => {
 	const { dailyToggles, setDailyToggles } = useLocalStorageZustand();
 	const { themeName } = useThemes();
 	const { playAudio } = useSounds();
@@ -64,17 +64,18 @@ export const ToggleButton = ({ idx, item }: ToggleButtonProps) => {
 	}, [activityLogData]);
 
 	const handleClick = () => {
+		const isActiveBeforeClick = dailyToggles.includes(item.id);
 		// this is a non-blocking asynchronous operation, we don't wait for it to complete
 		createActivityLog({
 			itemId: item.id,
-			activityType: dailyToggles[idx] ? "unclick" : "click",
-			score: dailyToggles[idx] ? -1 : 1,
+			activityType: isActiveBeforeClick ? "unclick" : "click",
+			score: isActiveBeforeClick ? -1 : 1,
 		});
 
 		setDailyToggles(
-			dailyToggles.map((_, i) =>
-				i === idx ? !dailyToggles[i] : dailyToggles[i],
-			),
+			isActiveBeforeClick
+				? dailyToggles.filter((id) => id !== item.id)
+				: unique([...dailyToggles, item.id]),
 		);
 
 		if ("vibrate" in navigator) {
@@ -84,11 +85,13 @@ export const ToggleButton = ({ idx, item }: ToggleButtonProps) => {
 		playAudio("click");
 	};
 
+	const isActive = dailyToggles.includes(item.id);
+
 	return (
 		<div className="card w-full max-w-sm flex flex-col justify-center items-center gap-2">
 			<button
 				type="button"
-				className={`${dailyToggles[idx] ? `btn btn-circle ${themeName === Themes.DARK ? "bg-primary-content" : "bg-primary/10"}` : "radial-progress text-primary-content/80 bg-accent"} flex flex-col items-center gap-2`}
+				className={`${isActive ? `btn btn-circle ${themeName === Themes.DARK ? "bg-primary-content" : "bg-primary/10"}` : "radial-progress text-primary-content/80 bg-accent"} flex flex-col items-center gap-2`}
 				style={
 					{
 						"--value": progressString,
@@ -99,12 +102,12 @@ export const ToggleButton = ({ idx, item }: ToggleButtonProps) => {
 				onClick={handleClick}
 			>
 				<span
-					className={`${dailyToggles[idx] ? "text-primary" : "text-primary-content"} text-4xl`}
+					className={`${isActive ? "text-primary" : "text-primary-content"} text-4xl`}
 				>
 					<i className={`fa-solid fa-${faIcon}`} />
 				</span>
 				<span
-					className={`uppercase ${dailyToggles[idx] ? "text-primary" : "text-primary-content"} text-sm`}
+					className={`uppercase ${isActive ? "text-primary" : "text-primary-content"} text-sm`}
 				>
 					{cumulativeScore ?? "0"}
 				</span>
