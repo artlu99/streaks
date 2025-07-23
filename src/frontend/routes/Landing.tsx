@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ResetButton } from "~/components/ResetButton";
 import { ToggleButton } from "~/components/ToggleButton";
 import { AddItemDrawer } from "~/components/manage/AddItemDrawer";
+import { FrequencyOption } from "~/constants";
 import { useAllItems } from "~/hooks/queries/useItems";
 
 export function Landing() {
@@ -12,7 +13,11 @@ export function Landing() {
 		return <p>Waiting for access to local database...</p>;
 	}
 
-	const { vwItems: items } = db;
+	const { vwItems } = db;
+	const items = vwItems.filter((i) => {
+		const { frequency: freq } = JSON.parse(i.activityJson ?? "{}");
+		return freq === FrequencyOption.DAILY;
+	});
 	const selectedItems = items?.filter((item) => item.isSelected) || [];
 
 	return (

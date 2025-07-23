@@ -9,17 +9,17 @@ export const evoluInstance = createEvolu(evoluReactWebDeps)(Schema, {
 	// Disable sync for development to avoid WebSocket connection issues
 	// syncUrl: undefined, // optional, defaults to https://free.evoluhq.com
 
-	// TODO: remove this once we have a real initial data
-	initialData: (evolu) => {
-		try {
-			const itemCategory = evolu.insert("itemCategory", { name: "daily" });
+	onInit: ({ isFirst }) => {
+		if (isFirst) {
+			const itemCategory = evoluInstance.insert("itemCategory", { name: "daily" });
 			assert(itemCategory.ok, "invalid initial data - itemCategory");
 
-			const item1 = evolu.insert("item", {
+			const item1 = evoluInstance.insert("item", {
 				title: "glass-water",
 				isSelected: true,
 				activityJson: {
 					label: "Drink",
+					frequency: "daily",
 					faIcon: "glass-water",
 					count: 0,
 				},
@@ -27,17 +27,18 @@ export const evoluInstance = createEvolu(evoluReactWebDeps)(Schema, {
 			});
 			assert(item1.ok, "invalid initial data - item1");
 
-			const itemOrder1 = evolu.insert("itemOrder", {
+			const itemOrder1 = evoluInstance.insert("itemOrder", {
 				itemId: item1.value.id,
 				orderIndex: 0,
 			});
 			assert(itemOrder1.ok, "invalid initial data - itemOrder1");
 
-			const item2 = evolu.insert("item", {
+			const item2 = evoluInstance.insert("item", {
 				title: "person-running",
 				isSelected: true,
 				activityJson: {
 					label: "Exercise",
+					frequency: "daily",
 					faIcon: "person-running",
 					count: 0,
 				},
@@ -45,13 +46,11 @@ export const evoluInstance = createEvolu(evoluReactWebDeps)(Schema, {
 			});
 			assert(item2.ok, "invalid initial data - item2");
 
-			const itemOrder2 = evolu.insert("itemOrder", {
+			const itemOrder2 = evoluInstance.insert("itemOrder", {
 				itemId: item2.value.id,
 				orderIndex: 1,
 			});
 			assert(itemOrder2.ok, "invalid initial data - itemOrder2");
-		} catch (error) {
-			console.error("Error in initialData:", error);
 		}
 	},
 });

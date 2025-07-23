@@ -1,36 +1,35 @@
 import { useState } from "react";
-import { FrequencySelector } from "~/components/FrequencySelector";
+import { ResetButton } from "~/components/ResetButton";
+import { TrackButton } from "~/components/TrackButton";
 import { AddItemDrawer } from "~/components/manage/AddItemDrawer";
-import { GithubLink } from "~/components/manage/GithubLink";
-import { ItemList } from "~/components/manage/ItemList";
+import { FrequencyOption } from "~/constants";
 import { useAllItems } from "~/hooks/queries/useItems";
-import { useLocalStorageZustand } from "~/hooks/use-zustand";
 
-export function Manage() {
+export function Elapsed() {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const { frequency } = useLocalStorageZustand();
-
 	const db = useAllItems();
 
 	if (!db) {
-		return <p>Loading database...</p>;
+		return <p>Waiting for access to local database...</p>;
 	}
 
 	const { vwItems } = db;
 	const items = vwItems.filter((i) => {
 		const { frequency: freq } = JSON.parse(i.activityJson ?? "{}");
-		return freq === frequency;
+		return freq === FrequencyOption.SPORADIC;
 	});
+	const selectedItems = items?.filter((item) => item.isSelected) || [];
 
 	return (
 		<>
 			<article className="prose dark:prose-invert px-4 pb-20">
-				<div className="max-w-2xl mx-auto">
-					<div className="flex justify-between items-center">
-						<GithubLink />
-						<FrequencySelector />
-					</div>
-					<ItemList items={items ?? []} />
+				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-2xl mx-auto">
+					{selectedItems.slice(0, 6).map((item) => (
+						<TrackButton key={item.id} item={item} />
+					))}
+				</div>
+				<div className="flex flex-col w-full justify-center items-center mt-8">
+					<ResetButton />
 				</div>
 			</article>
 

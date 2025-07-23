@@ -3,7 +3,7 @@
 	"name": "streaks",
 	"main": "src/backend/index.ts",
 	"compatibility_date": "2025-05-08",
-	"vars": { "NAME": "Streaks", "VERSION": "v0.1" },
+	"vars": { "NAME": "Streaks", "VERSION": "v0.2" },
 	"assets": { "not_found_handling": "single-page-application" },
 	"observability": { "enabled": true }
 }

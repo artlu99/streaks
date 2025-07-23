@@ -11,6 +11,12 @@ export const Dock = () => {
 				</Link>
 			</div>
 
+			<div className={`dock-item ${pathname === "/elapsed" ? "dock-active" : ""}`}>
+				<Link to="/elapsed">
+					<i className="fa-solid fa-history" />
+				</Link>
+			</div>
+
 			<div className={`dock-item ${pathname === "/viz" ? "dock-active" : ""}`}>
 				<Link to="/viz">
 					<i className="fa-solid fa-chart-line" />

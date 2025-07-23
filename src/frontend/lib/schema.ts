@@ -29,6 +29,7 @@ type NonEmptyString50 = typeof NonEmptyString50.Type;
 
 const Activity = object({
 	label: NonEmptyString50,
+	frequency: NonEmptyString50,
 	faIcon: NonEmptyString50,
 	count: FiniteNumber,
 });

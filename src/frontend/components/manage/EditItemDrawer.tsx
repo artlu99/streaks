@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { parse } from "valibot";
-import { dailyIcons } from "~/constants";
 import { useItemMutations } from "~/hooks/queries/useItems";
+import { useLocalStorageZustand } from "~/hooks/use-zustand";
+import { getIconsForFrequency } from "~/lib/iconUtils";
 import { ActivitySchema, type Item } from "~/lib/schema";
 
 interface EditItemDrawerProps {
@@ -24,7 +25,10 @@ export const EditItemDrawer = ({
 	const [label, setLabel] = useState(labelFromJson);
 	const [selectedIcon, setSelectedIcon] = useState(faIcon);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { frequency } = useLocalStorageZustand();
 	const { updateItem } = useItemMutations();
+
+	const icons = getIconsForFrequency(frequency);
 
 	// Update form when item changes
 	useEffect(() => {
@@ -41,6 +45,7 @@ export const EditItemDrawer = ({
 			await updateItem({
 				id: item.id,
 				label: label.trim(),
+				frequency: frequency,
 				faIcon: selectedIcon,
 			});
 			toast.success("Item updated successfully!");
@@ -101,7 +106,7 @@ export const EditItemDrawer = ({
 								<span className="label-text font-semibold">Choose Icon</span>
 							</legend>
 							<div className="grid grid-cols-5 gap-3">
-								{dailyIcons.map((icon) => (
+								{icons.map((icon) => (
 									<button
 										key={icon}
 										type="button"

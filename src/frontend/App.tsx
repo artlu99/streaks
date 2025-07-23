@@ -6,6 +6,7 @@ import { useThemes } from "~/hooks/use-themes";
 import { Landing } from "~/routes/Landing.tsx";
 import { Manage } from "~/routes/Manage";
 import { Viz } from "~/routes/Viz";
+import { Elapsed } from "./routes/Elapsed";
 
 function App() {
 	const { themeName } = useThemes();
@@ -16,6 +17,7 @@ function App() {
 			<div className="max-w-4xl mx-auto">
 				<Switch>
 					<Route path="/" component={Landing} />
+					<Route path="/elapsed" component={Elapsed} />
 					<Route path="/manage" component={Manage} />
 					<Route path="/viz" component={Viz} />
 				</Switch>

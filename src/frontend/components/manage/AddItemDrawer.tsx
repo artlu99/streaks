@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { dailyIcons } from "~/constants";
 import { useAllItems, useItemMutations } from "~/hooks/queries/useItems";
+import { useLocalStorageZustand } from "~/hooks/use-zustand";
+import { getIconsForFrequency } from "~/lib/iconUtils";
 
 interface AddItemDrawerProps {
 	isOpen: boolean;
@@ -10,10 +11,17 @@ interface AddItemDrawerProps {
 
 export const AddItemDrawer = ({ isOpen, onClose }: AddItemDrawerProps) => {
 	const [label, setLabel] = useState("");
-	const [selectedIcon, setSelectedIcon] = useState(dailyIcons[0]);
+	const [selectedIcon, setSelectedIcon] = useState<string|undefined>();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { frequency } = useLocalStorageZustand();
 	const { createItem } = useItemMutations();
 	const db = useAllItems();
+	
+	const icons = getIconsForFrequency(frequency);
+
+	useEffect(() => {
+		setSelectedIcon(icons[0]);
+	}, [icons]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -23,12 +31,13 @@ export const AddItemDrawer = ({ isOpen, onClose }: AddItemDrawerProps) => {
 		try {
 			await createItem({
 				label: label.trim(),
-				faIcon: selectedIcon,
+				frequency: frequency,
+				faIcon: selectedIcon ?? "home",
 				categoryId: db.categories[0].id.toString(),
 			});
 			toast.success("Item added successfully!");
 			setLabel("");
-			setSelectedIcon(dailyIcons[0]);
+			setSelectedIcon(icons[0]);
 			onClose();
 		} catch (error) {
 			console.error("Failed to create item:", error);
@@ -41,7 +50,7 @@ export const AddItemDrawer = ({ isOpen, onClose }: AddItemDrawerProps) => {
 	const handleClose = () => {
 		if (!isSubmitting) {
 			setLabel("");
-			setSelectedIcon(dailyIcons[0]);
+			setSelectedIcon(icons[0]);
 			onClose();
 		}
 	};
@@ -86,7 +95,7 @@ export const AddItemDrawer = ({ isOpen, onClose }: AddItemDrawerProps) => {
 								<span className="label-text font-semibold">Choose Icon</span>
 							</legend>
 							<div className="grid grid-cols-5 gap-3">
-								{dailyIcons.map((icon) => (
+								{icons.map((icon) => (
 									<button
 										key={icon}
 										type="button"

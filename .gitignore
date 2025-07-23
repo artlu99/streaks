@@ -6,6 +6,7 @@ bun.lock
 
 # wrangler files
 .wrangler
+worker-configuration.d.ts
 .dev.vars*
 
 TODO.md

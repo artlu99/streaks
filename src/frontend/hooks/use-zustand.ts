@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { combine, createJSONStorage, persist } from "zustand/middleware";
-import type { Themes } from "~/constants";
+import { FrequencyOption, type Themes } from "~/constants";
 import type { Item, ItemId } from "~/lib/schema";
 
 export const useZustand = create(
@@ -22,12 +22,14 @@ export const useLocalStorageZustand = create(
 			{
 				themeName: null as Themes | null,
 				playSounds: true,
+				frequency: FrequencyOption.DAILY,
 				dailyToggles: [] as ItemId[],
 			},
 			(set) => ({
 				setThemeName: (themeName: Themes | null) => set({ themeName }),
 				togglePlaySounds: () =>
 					set((state) => ({ playSounds: !state.playSounds })),
+				setFrequency: (frequency: typeof FrequencyOption.DAILY) => set({ frequency }),
 				setDailyToggles: (dailyToggles: ItemId[]) => set({ dailyToggles }),
 			}),
 		),

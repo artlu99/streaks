@@ -105,12 +105,13 @@ const upsertItem = (
 	itemData: {
 		id?: string;
 		label: string;
+		frequency: string;
 		faIcon: string;
 		categoryId?: string;
 		isSelected?: boolean;
 	},
 ) => {
-	const { id, label, faIcon, categoryId, isSelected = true } = itemData;
+	const { id, label, frequency, faIcon, categoryId, isSelected = true } = itemData;
 
 	if (id) {
 		return update("item", {
@@ -118,6 +119,7 @@ const upsertItem = (
 			title: faIcon,
 			activityJson: {
 				label,
+				frequency,
 				faIcon,
 				count: 0,
 			},
@@ -133,6 +135,7 @@ const upsertItem = (
 		isSelected,
 		activityJson: {
 			label,
+			frequency,
 			faIcon,
 			count: 0,
 		},
@@ -145,14 +148,16 @@ export const useItemMutations = () => {
 
 	const createItem = async ({
 		label,
+		frequency,
 		faIcon,
 		categoryId,
-	}: { label: string; faIcon: string; categoryId: string }) => {
+	}: { label: string; frequency: string; faIcon: string; categoryId: string }) => {
 		const itemResult = insert("item", {
 			title: faIcon,
 			isSelected: true,
 			activityJson: {
 				label,
+				frequency,
 				faIcon,
 				count: 0,
 			},
@@ -178,11 +183,13 @@ export const useItemMutations = () => {
 	const updateItem = async ({
 		id,
 		label,
+		frequency,
 		faIcon,
-	}: { id: string; label: string; faIcon: string }) => {
+	}: { id: string; label: string; frequency: string; faIcon: string }) => {
 		const result = upsertItem(insert, update, {
 			id,
 			label,
+			frequency,
 			faIcon,
 		});
 
