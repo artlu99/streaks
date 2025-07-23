@@ -43,6 +43,7 @@
 		"lefthook": "^1.12.2",
 		"typescript": "~5.8.3",
 		"vite": "^6.3.5",
+		"vite-plugin-pwa": "^1.0.1",
 		"wrangler": "4.15.1"
 	}
 }
